@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'com.google.firebase.crashlytics'
     id 'com.google.gms.google-services'
+    id "androidx.navigation.safeargs.kotlin"
 }
 
 android {
@@ -81,6 +82,9 @@ dependencies {
     implementation "org.koin:koin-core:2.1.6"
     implementation "org.koin:koin-android:2.1.6"
     implementation "org.koin:koin-androidx-viewmodel:2.1.6"
+
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1"
 
 
     testImplementation 'junit:junit:4.+'

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.firebasechat.R
 import com.example.firebasechat.databinding.FragmentChatBinding
@@ -24,14 +25,16 @@ class ChatFragment : Fragment() {
         // Inflate the layout for this fragment
        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat, container, false)
 
+        viewModel.mutableLiveData.observe(viewLifecycleOwner, Observer {action ->
+            when (action){
+                is ChatAction.WithoutAuthentication -> goToSignIn()
+            }
+        })
+
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        view.findViewById<Button>(R.id.button_first).setOnClickListener {
-            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
-        }
+    private fun goToSignIn(){
+        findNavController().navigate(ChatFragmentDirections.actionFirstFragmentToSecondFragment())
     }
 }
