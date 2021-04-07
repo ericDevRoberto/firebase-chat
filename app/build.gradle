@@ -20,6 +20,11 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        viewBinding true
+        dataBinding true
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -33,9 +38,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    buildFeatures {
-        viewBinding true
-    }
+
 
     packagingOptions {
         exclude 'META-INF/LICENSE'
@@ -75,8 +78,9 @@ dependencies {
     // LiveData
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
     //koin
+    implementation "org.koin:koin-core:2.1.6"
     implementation "org.koin:koin-android:2.1.6"
-    implementation "org.koin:koin-android-viewmodel:2.1.6"
+    implementation "org.koin:koin-androidx-viewmodel:2.1.6"
 
 
     testImplementation 'junit:junit:4.+'
