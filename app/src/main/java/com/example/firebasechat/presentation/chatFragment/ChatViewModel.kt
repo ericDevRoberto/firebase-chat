@@ -1,45 +1,28 @@
 package com.example.firebasechat.presentation.chatFragment
 
-import android.app.Activity
-import com.example.firebasechat.R
+import androidx.lifecycle.LiveData
 import com.example.firebasechat.utils.ViewModelCore
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.auth.api.signin.SignInAccount
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.FirebaseDatabase
 
 private const val ANONYMOUS = "anonymous"
 
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS",
+    "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS"
+)
 class ChatViewModel : ViewModelCore<ChatAction>() {
 
-    private val firebaseAuth = FirebaseAuth.getInstance()
-    private lateinit var signInClient: GoogleSignInClient
-    val dataBase = FirebaseDatabase.getInstance()
-    private val user: FirebaseUser? = firebaseAuth.currentUser
+    fun authentication(firebaseAuth: FirebaseAuth) {
 
-    init {
-        authentication()
+        if (firebaseAuth?.currentUser == null)
+            notAuthenticated()
     }
 
-    private fun authentication() {
-
-        if (firebaseAuth.currentUser == null)
-            mutableLiveData.value = ChatAction.WithoutAuthentication
+    fun notAuthenticated(){
+        mutableLiveData.value = ChatAction.WithoutAuthentication
     }
 
-    fun startSignInClient(activity: Activity) {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(activity.resources.getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-
-        signInClient = GoogleSignIn.getClient(activity, gso)
-    }
-
-    fun getUserName(): String {
+    fun getUserName(user: FirebaseUser?): String {
 
         return if (user != null)
             user.displayName
@@ -47,17 +30,11 @@ class ChatViewModel : ViewModelCore<ChatAction>() {
             ANONYMOUS
     }
 
-    fun getUserPhotoUrl(): String {
+    fun getUserPhotoUrl(user: FirebaseUser?): String {
 
         return if (user != null && user.photoUrl != null)
             user.photoUrl.toString()
         else
             String()
-    }
-
-    fun signOut() {
-        firebaseAuth.signOut()
-        signInClient.signOut()
-        mutableLiveData.value = ChatAction.SignOut
     }
 }

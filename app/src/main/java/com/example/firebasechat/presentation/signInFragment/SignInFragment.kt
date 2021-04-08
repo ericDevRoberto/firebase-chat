@@ -13,14 +13,18 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.firebasechat.R
 import com.example.firebasechat.databinding.FragmentSignInBinding
+import com.example.firebasechat.repository.FirebaseViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 private const val RC_SIGN_IN = 9001
 private const val TAG = "SignInFragment"
 
 class SignInFragment : Fragment() {
+
+    private val firebaseViewModel: FirebaseViewModel by inject()
 
     private val viewModel: SignInViewModel by viewModel()
     private lateinit var binding: FragmentSignInBinding
@@ -31,7 +35,7 @@ class SignInFragment : Fragment() {
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_sign_in, container, false)
 
-        viewModel.startSignInClient(requireActivity())
+        firebaseViewModel.startSignInClient(requireActivity())
 
         viewModel.mutableLiveData.observe(viewLifecycleOwner, Observer { action ->
             when (action) {
@@ -52,7 +56,7 @@ class SignInFragment : Fragment() {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
                 val account = task.getResult(ApiException::class.java)
-                account?.let { viewModel.firebaseAuthWithGoogle(it) }
+                account?.let { viewModel.firebaseAuthWithGoogle(it, firebaseViewModel.firebaseAuth) }
 
             } catch (e: ApiException) {
                 Log.w(TAG, "Google sign In failed", e)
@@ -61,11 +65,12 @@ class SignInFragment : Fragment() {
     }
 
     private fun signIn() {
-        val signInIntent = viewModel.signInClient.signInIntent
+        val signInIntent = firebaseViewModel.signInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
 
     private fun goToChatFragment() {
+        firebaseViewModel.autheticationOk()
         findNavController().navigate(SignInFragmentDirections.actionSecondFragmentToFirstFragment())
     }
 

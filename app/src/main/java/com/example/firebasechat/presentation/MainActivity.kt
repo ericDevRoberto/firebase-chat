@@ -1,18 +1,24 @@
 package com.example.firebasechat.presentation
 
-import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavHostController
+import androidx.navigation.findNavController
 import com.example.firebasechat.R
+import com.example.firebasechat.repository.FirebaseViewModel
+import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
+
+    private val firebaseViewModel: FirebaseViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -26,7 +32,10 @@ class MainActivity : AppCompatActivity() {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_sign_out -> true
+            R.id.action_sign_out -> {
+                firebaseViewModel.signOut()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }

@@ -14,9 +14,11 @@ import com.example.firebasechat.databinding.FragmentChatBinding
 import com.example.firebasechat.model.FriendlyMessage
 import com.example.firebasechat.presentation.chatFragment.adapter.FirebaseAdapter
 import com.example.firebasechat.presentation.chatFragment.adapter.MessageViewHolder
+import com.example.firebasechat.repository.FirebaseViewModel
 import com.example.firebasechat.utils.MyButtonObserver
 import com.example.firebasechat.utils.MyScrollToBottomObserver
 import com.firebase.ui.database.FirebaseRecyclerAdapter
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 private const val MESSAGES_CHILD = "messages"
@@ -24,6 +26,7 @@ private const val MESSAGES_CHILD = "messages"
 class ChatFragment : Fragment() {
 
     private val viewModel: ChatViewModel by viewModel()
+    private val firebaseViewModel: FirebaseViewModel by inject()
     private lateinit var binding: FragmentChatBinding
     private lateinit var firebaseAdapter: FirebaseRecyclerAdapter<FriendlyMessage, MessageViewHolder>
 
@@ -34,7 +37,15 @@ class ChatFragment : Fragment() {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat, container, false)
 
-        viewModel.startSignInClient(requireActivity())
+        firebaseViewModel.startSignInClient(requireActivity())
+
+       viewModel.authentication(firebaseAuth = firebaseViewModel.firebaseAuth)
+
+        firebaseViewModel.auth.observe(viewLifecycleOwner, Observer {auth ->
+
+            if (auth.currentUser == null)
+                viewModel.notAuthenticated()
+        })
 
         viewModel.mutableLiveData.observe(viewLifecycleOwner, Observer { action ->
             when (action) {
@@ -44,7 +55,7 @@ class ChatFragment : Fragment() {
         })
 
         val options = FirebaseAdapter.firebaseRecyclerChat<FriendlyMessage>(
-            viewModel.dataBase,
+            firebaseViewModel.dataBase,
             MESSAGES_CHILD
         )
 
@@ -66,15 +77,15 @@ class ChatFragment : Fragment() {
 
         binding.messageEditText.addTextChangedListener(MyButtonObserver(binding.sendButton))
 
-        binding.sendButton.setOnClickListener() {
+        binding.sendButton.setOnClickListener {
             val friendlyMessage = FriendlyMessage(
                 text = binding.messageEditText.text.toString(),
-                name = viewModel.getUserName(),
-                photoUrl = viewModel.getUserPhotoUrl(),
+                name = viewModel.getUserName(firebaseViewModel.user),
+                photoUrl = viewModel.getUserPhotoUrl(firebaseViewModel.user),
                 imageUrl = null
             )
 
-            viewModel.dataBase.reference.child(MESSAGES_CHILD).push().setValue(friendlyMessage)
+            firebaseViewModel.dataBase.reference.child(MESSAGES_CHILD).push().setValue(friendlyMessage)
             binding.messageEditText.setText("")
         }
 
