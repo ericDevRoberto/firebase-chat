@@ -34,7 +34,7 @@ class SignInViewModel : ViewModelCore<SignInAction>() {
             }
     }
 
-    fun startSignInClient(activity : Activity){
+    fun startSignInClient(activity: Activity) {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(activity.resources.getString(R.string.default_web_client_id))
             .requestEmail()

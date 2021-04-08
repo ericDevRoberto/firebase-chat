@@ -9,7 +9,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.database.FirebaseDatabase
 
-class FirebaseAdapter( dataBase : FirebaseDatabase) {
+class FirebaseAdapter() {
 
     companion object {
 

@@ -3,7 +3,7 @@ package com.example.firebasechat.model
 class FriendlyMessage {
     var text: String? = null
     var name: String? = null
-    var photoUrl: String? = null
+    private var photoUrl: String? = null
     var imageUrl: String? = null
 
     constructor(){}

@@ -2,22 +2,23 @@ package com.example.firebasechat.presentation.chatFragment
 
 import android.app.Activity
 import com.example.firebasechat.R
-import com.example.firebasechat.model.FriendlyMessage
 import com.example.firebasechat.utils.ViewModelCore
-import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.signin.SignInAccount
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.FirebaseDatabase
+
+private const val ANONYMOUS = "anonymous"
 
 class ChatViewModel : ViewModelCore<ChatAction>() {
 
-    val firebaseAuth = FirebaseAuth.getInstance()
-    lateinit var signInClient: GoogleSignInClient
+    private val firebaseAuth = FirebaseAuth.getInstance()
+    private lateinit var signInClient: GoogleSignInClient
     val dataBase = FirebaseDatabase.getInstance()
-    val MESSAGES_CHILD = "messages"
-    val ANONYMOUS = "anonymous"
+    private val user: FirebaseUser? = firebaseAuth.currentUser
 
     init {
         authentication()
@@ -29,7 +30,7 @@ class ChatViewModel : ViewModelCore<ChatAction>() {
             mutableLiveData.value = ChatAction.WithoutAuthentication
     }
 
-    fun startSignInClient(activity : Activity){
+    fun startSignInClient(activity: Activity) {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(activity.resources.getString(R.string.default_web_client_id))
             .requestEmail()
@@ -38,10 +39,7 @@ class ChatViewModel : ViewModelCore<ChatAction>() {
         signInClient = GoogleSignIn.getClient(activity, gso)
     }
 
-
-
     fun getUserName(): String {
-        val user = firebaseAuth.currentUser
 
         return if (user != null)
             user.displayName
@@ -50,11 +48,16 @@ class ChatViewModel : ViewModelCore<ChatAction>() {
     }
 
     fun getUserPhotoUrl(): String {
-        val user = firebaseAuth.currentUser
 
         return if (user != null && user.photoUrl != null)
             user.photoUrl.toString()
         else
             String()
+    }
+
+    fun signOut() {
+        firebaseAuth.signOut()
+        signInClient.signOut()
+        mutableLiveData.value = ChatAction.SignOut
     }
 }

@@ -16,8 +16,6 @@ class MessageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     private var messageTextView: TextView = itemView.findViewById(R.id.messageTextView) as TextView
     private var messageImageView: ImageView = itemView.findViewById(R.id.messageImageView) as ImageView
-   // var messengerTextView: TextView = itemView.findViewById(R.id.messengerTextView) as TextView
-   // var messengerImageView: CircleImageView = itemView.findViewById(R.id.messengerImageView) as CircleImageView
 
     fun bindMessage(friendlyMessage: FriendlyMessage) {
 
