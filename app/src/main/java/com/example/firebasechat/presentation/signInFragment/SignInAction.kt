@@ -1,4 +1,4 @@
-package com.example.firebasechat.presentation.SignInFragment
+package com.example.firebasechat.presentation.signInFragment
 
 sealed class SignInAction {
     object AuthenticationSuccess : SignInAction()

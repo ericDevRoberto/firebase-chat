@@ -1,4 +1,4 @@
-package com.example.firebasechat.presentation.ChatFragment
+package com.example.firebasechat.presentation.chatFragment
 
 sealed class ChatAction {
     object WithoutAuthentication : ChatAction()

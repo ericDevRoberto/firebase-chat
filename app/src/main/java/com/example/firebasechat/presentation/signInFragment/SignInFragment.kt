@@ -1,4 +1,4 @@
-package com.example.firebasechat.presentation.SignInFragment
+package com.example.firebasechat.presentation.signInFragment
 
 import android.content.Intent
 import android.os.Bundle
